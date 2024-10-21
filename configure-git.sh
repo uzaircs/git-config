@@ -11,8 +11,19 @@ configure_git() {
     git config --global user.name "$git_name"
 }
 
+# Function to start ssh-agent if it's not running
+start_ssh_agent() {
+    # Check if ssh-agent is already running
+    if ! pgrep -u "$USER" ssh-agent > /dev/null; then
+        echo "Starting ssh-agent..."
+        eval "$(ssh-agent -s)"
+    fi
+}
+
 # Function to add the SSH private key
 configure_ssh() {
+    start_ssh_agent  # Ensure ssh-agent is running
+
     echo "Would you like to paste your private key or enter the path to the key?"
     echo "Type 'paste' to paste the key or 'path' to provide the path:"
     read option
